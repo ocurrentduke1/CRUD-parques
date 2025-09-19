@@ -4,23 +4,51 @@ import { Park } from '../../models/park';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { ParkService } from '../../services/park-service';
 import Swal from 'sweetalert2';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-park-list',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './park-list.html',
 })
 export class ParkList {
   parks: Park[] = [];
+  filteredParks: Park[] = [];
+  displayedParks: Park[] = [];
+  selectedCity: string = '';
+  searchTerm: string = '';
 
   constructor(private router: Router, private parkService: ParkService) {}
 
   ngOnInit(): void {
     this.parkService.getAllParks().subscribe((parks) => {
       this.parks = parks.data;
-      console.log(this.parks);
+      this.filteredParks = [...this.parks];
+      this.displayedParks = [...this.parks];
     });
   }
+
+  filtrarParques(): void {
+    if (!this.selectedCity) {
+      this.filteredParks = [...this.parks]; // todas las ciudades
+    } else {
+      this.filteredParks = this.parks.filter(
+        (p) => p.park_city === this.selectedCity
+      );
+    }
+    this.buscarParques();
+  }
+
+  buscarParques(): void {
+  const term = this.searchTerm.toLowerCase();
+  if (!term) {
+    this.displayedParks = [...this.filteredParks];
+  } else {
+    this.displayedParks = this.filteredParks.filter((p) =>
+      p.park_name.toLowerCase().includes(term)
+    );
+  }
+}
 
   eliminar(id: number): void {
     Swal.fire({

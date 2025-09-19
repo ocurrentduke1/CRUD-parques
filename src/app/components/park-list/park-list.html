@@ -1,5 +1,44 @@
 <h2 class="text-2xl font-bold mb-4 py-2 px-4">Lista de Parques</h2>
 
+<div class="flex flex-col md:flex-row gap-4 px-4 mb-4">
+  <!-- Filtro de ciudad -->
+  <div class="flex-1">
+    <label for="cityFilter" class="block mb-2 font-semibold">Filtrar por ciudad:</label>
+    <select
+      id="cityFilter"
+      [(ngModel)]="selectedCity"
+      (change)="filtrarParques()"
+      class="border rounded px-3 py-2 w-full"
+    >
+      <option value="">Todas</option>
+      <option value="Zapopan">Zapopan</option>
+      <option value="Guadalajara">Guadalajara</option>
+      <option value="San Pedro Tlaquepaque">San Pedro Tlaquepaque</option>
+      <option value="Tonalá">Tonalá</option>
+    </select>
+  </div>
+
+  <!-- Barra de búsqueda -->
+  <div class="flex-1">
+  <label for="search" class="block mb-2 font-semibold">Buscar por nombre:</label>
+  <div class="flex gap-2">
+    <input
+      id="search"
+      type="text"
+      [(ngModel)]="searchTerm"
+      placeholder="Escribe el nombre del parque..."
+      class="border rounded px-3 py-2 w-full"
+    />
+    <button
+      (click)="buscarParques()"
+      class="bg-[#4CA773] text-white font-bold px-4 py-2 rounded hover:opacity-90 transition duration-200"
+    >
+      Buscar
+    </button>
+  </div>
+</div>
+</div>
+
 <button
   class="bg-[#4CA773] text-white mb-6 font-bold px-4 py-2 rounded transition duration-200 ease-in-out hover:opacity-90 flex items-center gap-2 mx-4"
   [routerLink]="['/parques/crear']"
@@ -23,7 +62,7 @@
 
 <div class="flex flex-wrap justify-center gap-4 p-4 bg-[#f4fdfb]">
   <div
-    *ngFor="let park of parks; let i = index"
+    *ngFor="let park of displayedParks; let i = index"
     class="w-[260px] min-h-[420px] flex flex-col border border-[#4BA6A5] rounded-[12px] p-4 bg-white shadow-[2px_4px_10px_rgba(0,0,0,0.1)] transition-transform transition-shadow duration-200 ease-in-out hover:-translate-y-1 hover:shadow-[4px_6px_15px_rgba(0,0,0,0.15)]"
   >
     <img
