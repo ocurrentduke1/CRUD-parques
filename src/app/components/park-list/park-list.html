@@ -1,6 +1,6 @@
-<h2 class="text-2xl font-bold mb-4 py-2 px-4">Lista de Parques</h2>
+<h2 *ngIf="!loading" class="text-2xl font-bold mb-4 py-2 px-4">Lista de Parques</h2>
 
-<div class="flex flex-col md:flex-row gap-4 px-4 mb-4">
+<div *ngIf="!loading" class="flex flex-col md:flex-row gap-4 px-4 mb-4">
   <!-- Filtro de ciudad -->
   <div class="flex-1">
     <label for="cityFilter" class="block mb-2 font-semibold">Filtrar por ciudad:</label>
@@ -26,20 +26,25 @@
       id="search"
       type="text"
       [(ngModel)]="searchTerm"
+      (keyup.enter)="buscarParques()"
       placeholder="Escribe el nombre del parque..."
       class="border rounded px-3 py-2 w-full"
     />
     <button
       (click)="buscarParques()"
-      class="bg-[#4CA773] text-white font-bold px-4 py-2 rounded hover:opacity-90 transition duration-200"
+      class="bg-[#4CA773] text-white font-bold px-4 py-2 rounded hover:opacity-90 transition duration-200 flex items-center gap-2"
     >
-      Buscar
+      <span>Buscar</span>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1 0 6.5 6.5a7.5 7.5 0 0 0 10.15 10.15z" />
+      </svg>
     </button>
   </div>
 </div>
 </div>
 
 <button
+*ngIf="!loading"
   class="bg-[#4CA773] text-white mb-6 font-bold px-4 py-2 rounded transition duration-200 ease-in-out hover:opacity-90 flex items-center gap-2 mx-4"
   [routerLink]="['/parques/crear']"
 >
@@ -60,7 +65,22 @@
   </svg>
 </button>
 
-<div class="flex flex-wrap justify-center gap-4 p-4 bg-[#f4fdfb]">
+<div *ngIf="loading" class="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-80">
+    <div class="flex flex-col items-center">
+      <svg class="animate-spin" fill="none" height="64" viewBox="0 0 64 64" width="64" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M8 32C8 46.3594 19.6406 58 34 58C48.3594 58 60 46.3594 60 32C60 17.6406 48.3594 6 34 6"
+          stroke="#4CA773"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="6"
+        />
+      </svg>
+      <span class="mt-6 text-lg text-[#4CA773] font-semibold">Cargando...</span>
+    </div>
+  </div>
+
+<div *ngIf="!loading" class="flex flex-wrap justify-center gap-4 p-4 bg-[#f4fdfb]">
   <div
     *ngFor="let park of displayedParks; let i = index"
     class="w-[260px] min-h-[420px] flex flex-col border border-[#4BA6A5] rounded-[12px] p-4 bg-white shadow-[2px_4px_10px_rgba(0,0,0,0.1)] transition-transform transition-shadow duration-200 ease-in-out hover:-translate-y-1 hover:shadow-[4px_6px_15px_rgba(0,0,0,0.15)]"

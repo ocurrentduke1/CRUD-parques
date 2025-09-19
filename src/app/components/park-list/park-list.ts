@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Park } from '../../models/park';
-import { Router, RouterModule, RouterOutlet } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ParkService } from '../../services/park-service';
 import Swal from 'sweetalert2';
 import { FormsModule } from '@angular/forms';
@@ -17,14 +17,28 @@ export class ParkList {
   displayedParks: Park[] = [];
   selectedCity: string = '';
   searchTerm: string = '';
+  loading: boolean = false;
 
   constructor(private router: Router, private parkService: ParkService) {}
 
   ngOnInit(): void {
-    this.parkService.getAllParks().subscribe((parks) => {
-      this.parks = parks.data;
-      this.filteredParks = [...this.parks];
-      this.displayedParks = [...this.parks];
+    this.loading = true; // inicio de carga
+    this.parkService.getAllParks().subscribe({
+      next: (parks) => {
+        this.parks = parks.data;
+        this.filteredParks = [...this.parks];
+        this.displayedParks = [...this.parks];
+        this.loading = false; // fin de carga
+      },
+      error: (err) => {
+        console.error(err);
+        this.loading = false; // ocultar spinner aunque haya error
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al cargar parques',
+          text: 'No se pudieron obtener los datos.',
+        });
+      }
     });
   }
 

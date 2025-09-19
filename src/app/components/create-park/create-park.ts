@@ -3,10 +3,6 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { ParkService } from '../../services/park-service';
 import { Park } from '../../models/park';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
-import { MatInputModule } from '@angular/material/input';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
 
@@ -15,19 +11,14 @@ import { CommonModule } from '@angular/common';
   imports: [
     RouterModule,
     FormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatInputModule,
     CommonModule,
   ],
   templateUrl: './create-park.html',
 })
 export class CreatePark {
-  regresar() {
-    this.router.navigate(['/parques']);
-  }
+
   backendErrors: { [key: string]: string[] } = {};
+  loading: boolean = false;
 
   parque: Partial<Park> = {
     id: undefined,
@@ -51,6 +42,7 @@ export class CreatePark {
   ) {}
 
   ngOnInit() {
+    this.loading = true;
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       this.modoEdicion = !!id;
@@ -58,7 +50,10 @@ export class CreatePark {
         this.idEditar = +id;
         this.parkService.getById(+id).subscribe((parque) => {
           this.parque = { ...parque };
+          this.loading = false;
         });
+      } else {
+        this.loading = false;
       }
     });
   }
@@ -177,5 +172,9 @@ export class CreatePark {
         });
       }
     }
+  }
+
+  regresar() {
+    this.router.navigate(['/parques']);
   }
 }
