@@ -14,7 +14,11 @@
         placeholder="Ej. Parque Central"
         class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
         required
+        maxlength="100"
       />
+      <div *ngIf="backendErrors['park_name']" class="text-red-500 text-sm mt-1">
+        {{ backendErrors['park_name'][0] }}
+      </div>
     </div>
 
     <!-- Abreviatura -->
@@ -27,7 +31,11 @@
         placeholder="Ej. PC"
         class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
         required
+        maxlength="10"
       />
+      <div *ngIf="backendErrors['park_abbreviation']" class="text-red-500 text-sm mt-1">
+        {{ backendErrors['park_abbreviation'][0] }}
+      </div>
     </div>
 
     <!-- Imagen -->
@@ -37,10 +45,13 @@
         type="text"
         name="imagen"
         [(ngModel)]="parque.park_img_uri"
-        placeholder="https://..."
+        placeholder="https://... jpeg, jpg o png"
         class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
         required
       />
+      <div *ngIf="backendErrors['park_img_url']" class="text-red-500 text-sm mt-1">
+        {{ backendErrors['park_img_url'][0] }}
+      </div>
     </div>
 
     <!-- Dirección -->
@@ -53,21 +64,59 @@
         placeholder="Calle 123, Colonia"
         class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
         required
+        maxlength="150"
       />
+      <div *ngIf="backendErrors['park_address']" class="text-red-500 text-sm mt-1">
+        {{ backendErrors['park_address'][0] }}
+      </div>
     </div>
 
     <!-- Ciudad / Estado -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-1">Ciudad</label>
-        <input
-          type="text"
+        <select
           name="ciudad"
           [(ngModel)]="parque.park_city"
-          placeholder="Ej. Guadalajara"
-          class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
+          class="w-full p-3 border border-[#4CA773] rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773] transition-all duration-300 ease-in-out bg-white"
           required
-        />
+          onfocus="this.classList.add('opened')"
+          onblur="this.classList.remove('opened')"
+        >
+          <option
+            value=""
+            class="bg-white text-gray-500 py-2 px-3 border border-[#4CA773] rounded-md transition-all duration-300 ease-in-out"
+          >
+            Selecciona una ciudad
+          </option>
+          <option
+            value="Zapopan"
+            class="bg-white text-[#0B6B3A] py-2 px-3 border border-[#4CA773] rounded-md hover:bg-[#F4FDFB] transition-all duration-300 ease-in-out"
+          >
+            Zapopan
+          </option>
+          <option
+            value="Guadalajara"
+            class="bg-white text-[#0B6B3A] py-2 px-3 border border-[#4CA773] rounded-md hover:bg-[#F4FDFB] transition-all duration-300 ease-in-out"
+          >
+            Guadalajara
+          </option>
+          <option
+            value="San Pedro Tlaquepaque"
+            class="bg-white text-[#0B6B3A] py-2 px-3 border border-[#4CA773] rounded-md hover:bg-[#F4FDFB] transition-all duration-300 ease-in-out"
+          >
+            San Pedro Tlaquepaque
+          </option>
+          <option
+            value="Tonalá"
+            class="bg-white text-[#0B6B3A] py-2 px-3 border border-[#4CA773] rounded-md hover:bg-[#F4FDFB] transition-all duration-300 ease-in-out"
+          >
+            Tonalá
+          </option>
+        </select>
+        <div *ngIf="backendErrors['park_city']" class="text-red-500 text-sm mt-1">
+          {{ backendErrors['park_city'][0] }}
+        </div>
       </div>
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-1">Estado</label>
@@ -78,7 +127,11 @@
           placeholder="Ej. Jalisco"
           class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
           required
+          maxlength="100"
         />
+        <div *ngIf="backendErrors['park_state']" class="text-red-500 text-sm mt-1">
+          {{ backendErrors['park_state'][0] }}
+        </div>
       </div>
     </div>
 
@@ -94,6 +147,9 @@
           class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
           required
         />
+        <div *ngIf="backendErrors['park_zip_code']" class="text-red-500 text-sm mt-1">
+          {{ backendErrors['park_zip_code'][0] }}
+        </div>
       </div>
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-1">Latitud</label>
@@ -105,6 +161,9 @@
           class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
           required
         />
+        <div *ngIf="backendErrors['park_latitude']" class="text-red-500 text-sm mt-1">
+          {{ backendErrors['park_latitude'][0] }}
+        </div>
       </div>
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-1">Longitud</label>
@@ -116,17 +175,27 @@
           class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
           required
         />
+        <div *ngIf="backendErrors['park_longitude']" class="text-red-500 text-sm mt-1">
+          {{ backendErrors['park_longitude'][0] }}
+        </div>
       </div>
     </div>
 
-    <!-- Botón -->
-    <div class="text-center">
-      <button
-        type="submit"
-        class="bg-[#4CA773] hover:bg-[#3b865c] text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200 ease-in-out"
-      >
-        Guardar
-      </button>
+    <!-- Botones -->
+    <div class="flex justify-center gap-4 mt-6">
+        <button
+          type="button"
+          class="bg-[#4BA6A5] hover:bg-[#368a89] text-white px-7 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200 ease-in-out"
+          (click)="regresar()"
+        >
+          Regresar
+        </button>
+        <button
+          type="submit"
+          class="bg-[#4CA773] hover:bg-[#3b865c] text-white px-7 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200 ease-in-out"
+        >
+          Guardar
+        </button>
     </div>
   </form>
 </div>

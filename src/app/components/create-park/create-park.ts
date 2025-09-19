@@ -3,13 +3,32 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { ParkService } from '../../services/park-service';
 import { Park } from '../../models/park';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import Swal from 'sweetalert2';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-create-park',
-  imports: [RouterModule, FormsModule],
+  imports: [
+    RouterModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatInputModule,
+    CommonModule,
+  ],
   templateUrl: './create-park.html',
 })
 export class CreatePark {
+  regresar() {
+    this.router.navigate(['/parques']);
+  }
+  backendErrors: { [key: string]: string[] } = {};
+
   parque: Partial<Park> = {
     id: undefined,
     park_name: '',
@@ -25,15 +44,19 @@ export class CreatePark {
   modoEdicion = false;
   idEditar: number | null = null;
 
-  constructor(private router: Router, private route: ActivatedRoute, private parkService: ParkService) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private parkService: ParkService
+  ) {}
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       this.modoEdicion = !!id;
       if (id) {
         this.idEditar = +id;
-        this.parkService.getById(+id).subscribe(parque => {
+        this.parkService.getById(+id).subscribe((parque) => {
           this.parque = { ...parque };
         });
       }
@@ -55,20 +78,40 @@ export class CreatePark {
       ...rest,
       park_img_url: this.parque.park_img_uri ?? '',
     };
-    console.log('Enviando al backend:', parqueParaCrear);
+    this.backendErrors = {};
     try {
       this.parkService.create(parqueParaCrear as Park).subscribe({
         next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Parque creado',
+            text: 'El parque ha sido creado exitosamente',
+          });
           this.router.navigate(['/parques']);
         },
         error: (err) => {
-          const mensaje = err?.error?.message || err?.message || 'Error desconocido al crear parque';
-          window.alert('Error: ' + mensaje);
-        }
+          if (err?.error?.errors) {
+            this.backendErrors = err.error.errors;
+          }
+          const mensaje =
+            err?.error?.message || err?.message || 'Error desconocido al crear parque';
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al crear parque',
+            text: mensaje,
+          });
+        },
       });
     } catch (err: any) {
+      if (err?.error?.errors) {
+        this.backendErrors = err.error.errors;
+      }
       const mensaje = err?.error?.message || err?.message || 'Error desconocido al crear parque';
-      window.alert('Error: ' + mensaje);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al crear parque',
+        text: mensaje,
+      });
     }
   }
 
@@ -87,19 +130,51 @@ export class CreatePark {
         park_longitude: this.parque.park_longitude ?? 0,
       };
       console.log('Actualizando parque, datos enviados:', parqueConId);
+      this.backendErrors = {};
       try {
-        this.parkService.update(this.idEditar, parqueConId).subscribe({
-          next: () => {
+        Swal.fire({
+          title: '¿Quieres guardar los cambios?',
+          showDenyButton: true,
+          showCancelButton: true,
+          confirmButtonText: 'Guardar',
+          denyButtonText: 'No guardar',
+        }).then((result) => {
+          /* Read more about isConfirmed, isDenied below */
+          if (result.isConfirmed) {
+            this.parkService.update(this.idEditar!, parqueConId).subscribe({
+              next: () => {
+                Swal.fire('¡Guardado!', '', 'success');
+                this.router.navigate(['/parques']);
+              },
+              error: (err) => {
+                if (err?.error?.errors) {
+                  this.backendErrors = err.error.errors;
+                }
+                const mensaje =
+                  err?.error?.message || err?.message || 'Error desconocido al actualizar parque';
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error al actualizar parque',
+                  text: mensaje,
+                });
+              },
+            });
+          } else if (result.isDenied) {
+            Swal.fire('Los cambios no se guardaron', '', 'info');
             this.router.navigate(['/parques']);
-          },
-          error: (err) => {
-            const mensaje = err?.error?.message || err?.message || 'Error desconocido al actualizar parque';
-            window.alert('Error: ' + mensaje);
           }
         });
       } catch (err: any) {
-        const mensaje = err?.error?.message || err?.message || 'Error desconocido al actualizar parque';
-        window.alert('Error: ' + mensaje);
+        if (err?.error?.errors) {
+          this.backendErrors = err.error.errors;
+        }
+        const mensaje =
+          err?.error?.message || err?.message || 'Error desconocido al actualizar parque';
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al actualizar parque',
+          text: mensaje,
+        });
       }
     }
   }
