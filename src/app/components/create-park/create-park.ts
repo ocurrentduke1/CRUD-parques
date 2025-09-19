@@ -44,18 +44,37 @@ export class CreatePark {
     if (this.modoEdicion) {
       this.actualizarParque();
     } else {
-      // Remove 'id' from the object before creating, since it's not required for new parks
-      const { id, ...parqueSinId } = this.parque;
-      this.parkService.create(parqueSinId as Park).subscribe(() => {
-        this.router.navigate(['/parques']);
+      this.crearParque();
+    }
+  }
+
+  crearParque() {
+    // Remove 'id' from the object before creating, since it's not required for new parks
+    const { id, park_img_uri, ...rest } = this.parque;
+    const parqueParaCrear = {
+      ...rest,
+      park_img_url: this.parque.park_img_uri ?? '',
+    };
+    console.log('Enviando al backend:', parqueParaCrear);
+    try {
+      this.parkService.create(parqueParaCrear as Park).subscribe({
+        next: () => {
+          this.router.navigate(['/parques']);
+        },
+        error: (err) => {
+          const mensaje = err?.error?.message || err?.message || 'Error desconocido al crear parque';
+          window.alert('Error: ' + mensaje);
+        }
       });
+    } catch (err: any) {
+      const mensaje = err?.error?.message || err?.message || 'Error desconocido al crear parque';
+      window.alert('Error: ' + mensaje);
     }
   }
 
   actualizarParque() {
     if (this.idEditar !== null) {
-      // Ensure all required Park properties are present and not undefined
-      const parqueConId: Park = {
+      const parqueConId = {
         id: this.idEditar,
         park_name: this.parque.park_name ?? '',
         park_abbreviation: this.parque.park_abbreviation ?? '',
@@ -67,9 +86,21 @@ export class CreatePark {
         park_latitude: this.parque.park_latitude ?? 0,
         park_longitude: this.parque.park_longitude ?? 0,
       };
-      this.parkService.update(this.idEditar, parqueConId).subscribe(() => {
-        this.router.navigate(['/parques']);
-      });
+      console.log('Actualizando parque, datos enviados:', parqueConId);
+      try {
+        this.parkService.update(this.idEditar, parqueConId).subscribe({
+          next: () => {
+            this.router.navigate(['/parques']);
+          },
+          error: (err) => {
+            const mensaje = err?.error?.message || err?.message || 'Error desconocido al actualizar parque';
+            window.alert('Error: ' + mensaje);
+          }
+        });
+      } catch (err: any) {
+        const mensaje = err?.error?.message || err?.message || 'Error desconocido al actualizar parque';
+        window.alert('Error: ' + mensaje);
+      }
     }
   }
 }

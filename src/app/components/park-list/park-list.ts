@@ -23,7 +23,19 @@ export class ParkList {
   }
 
   eliminar(id: number): void {
-    this.parks = this.parks.filter((p) => p.id !== id);
+    const confirmado = window.confirm('¿Está seguro de que desea eliminar este parque?');
+    if (!confirmado) {
+      return;
+    }
+    this.parkService.delete(id).subscribe({
+      next: () => {
+        this.parks = this.parks.filter((p) => p.id !== id);
+      },
+      error: (err) => {
+        const mensaje = err?.error?.message || err?.message || 'Error al eliminar parque';
+        window.alert('Error: ' + mensaje);
+      }
+    });
   }
 
   editar(id: number): void {
