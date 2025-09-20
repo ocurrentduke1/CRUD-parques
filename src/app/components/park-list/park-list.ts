@@ -38,7 +38,7 @@ export class ParkList {
           title: 'Error al cargar parques',
           text: 'No se pudieron obtener los datos.',
         });
-      }
+      },
     });
   }
 
@@ -46,23 +46,21 @@ export class ParkList {
     if (!this.selectedCity) {
       this.filteredParks = [...this.parks]; // todas las ciudades
     } else {
-      this.filteredParks = this.parks.filter(
-        (p) => p.park_city === this.selectedCity
-      );
+      this.filteredParks = this.parks.filter((p) => p.park_city === this.selectedCity);
     }
     this.buscarParques();
   }
 
   buscarParques(): void {
-  const term = this.searchTerm.toLowerCase();
-  if (!term) {
-    this.displayedParks = [...this.filteredParks];
-  } else {
-    this.displayedParks = this.filteredParks.filter((p) =>
-      p.park_name.toLowerCase().includes(term)
-    );
+    const term = this.searchTerm.toLowerCase();
+    if (!term) {
+      this.displayedParks = [...this.filteredParks];
+    } else {
+      this.displayedParks = this.filteredParks.filter((p) =>
+        p.park_name.toLowerCase().includes(term)
+      );
+    }
   }
-}
 
   eliminar(id: number): void {
     Swal.fire({
@@ -73,7 +71,7 @@ export class ParkList {
       confirmButtonColor: '#4BA6A5',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminarlo!',
-      cancelButtonText: 'Cancelar'
+      cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
         this.parkService.delete(id).subscribe({
@@ -100,5 +98,9 @@ export class ParkList {
 
   editar(id: number): void {
     this.router.navigate(['/parques/editar', id]);
+  }
+
+  verDetalle(id: number): void {
+    this.router.navigate(['/parques/detalle', id]);
   }
 }

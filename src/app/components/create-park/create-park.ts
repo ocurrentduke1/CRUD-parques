@@ -32,8 +32,10 @@ export class CreatePark {
     park_latitude: 0,
     park_longitude: 0,
   };
+
   modoEdicion = false;
   idEditar: number | null = null;
+  imagenNoEncontrada = false;
 
   constructor(
     private router: Router,
@@ -57,6 +59,22 @@ export class CreatePark {
       }
     });
   }
+
+  getImagenUrl(): string | null {
+  const url = this.parque.park_img_uri || '';
+
+  // En modo edición, concatenamos el storage
+  const finalUrl = this.modoEdicion
+    ? `https://azuritaa33.sg-host.com/storage/${url}`
+    : url;
+
+  // Validar que sea una URL con extensión de imagen
+  if (/\.(jpe?g|png)$/i.test(finalUrl)) {
+    return finalUrl;
+  }
+
+  return null;
+}
 
   guardarParque() {
     if (this.modoEdicion) {
@@ -177,4 +195,5 @@ export class CreatePark {
   regresar() {
     this.router.navigate(['/parques']);
   }
+
 }

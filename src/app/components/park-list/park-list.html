@@ -1,7 +1,9 @@
+<!-- Título principal de la página, solo se muestra cuando ya cargó la información -->
 <h2 *ngIf="!loading" class="text-2xl font-bold mb-4 py-2 px-4">Lista de Parques</h2>
 
+<!-- Barra superior con filtros (ciudad y búsqueda por nombre), visible solo si no está cargando -->
 <div *ngIf="!loading" class="flex flex-col md:flex-row gap-4 px-4 mb-4">
-  <!-- Filtro de ciudad -->
+  <!-- Filtro por ciudad -->
   <div class="flex-1">
     <label for="cityFilter" class="block mb-2 font-semibold">Filtrar por ciudad:</label>
     <select
@@ -10,6 +12,7 @@
       (change)="filtrarParques()"
       class="border rounded px-3 py-2 w-full"
     >
+      <!-- Opciones de ciudad disponibles -->
       <option value="">Todas</option>
       <option value="Zapopan">Zapopan</option>
       <option value="Guadalajara">Guadalajara</option>
@@ -18,37 +21,52 @@
     </select>
   </div>
 
-  <!-- Barra de búsqueda -->
+  <!-- Barra de búsqueda por nombre -->
   <div class="flex-1">
-  <label for="search" class="block mb-2 font-semibold">Buscar por nombre:</label>
-  <div class="flex gap-2">
-    <input
-      id="search"
-      type="text"
-      [(ngModel)]="searchTerm"
-      (keyup.enter)="buscarParques()"
-      placeholder="Escribe el nombre del parque..."
-      class="border rounded px-3 py-2 w-full"
-    />
-    <button
-      (click)="buscarParques()"
-      class="bg-[#4CA773] text-white font-bold px-4 py-2 rounded hover:opacity-90 transition duration-200 flex items-center gap-2"
-    >
-      <span>Buscar</span>
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1 0 6.5 6.5a7.5 7.5 0 0 0 10.15 10.15z" />
-      </svg>
-    </button>
+    <label for="search" class="block mb-2 font-semibold">Buscar por nombre:</label>
+    <div class="flex gap-2">
+      <input
+        id="search"
+        type="text"
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="buscarParques()"
+        placeholder="Escribe el nombre del parque..."
+        class="border rounded px-3 py-2 w-full"
+      />
+      <!-- Botón de búsqueda -->
+      <button
+        (click)="buscarParques()"
+        class="bg-[#4CA773] text-white font-bold px-4 py-2 rounded hover:opacity-90 transition duration-200 flex items-center gap-2 transform hover:scale-105"
+      >
+        <span>Buscar</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          class="w-5 h-5"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1 0 
+                   6.5 6.5a7.5 7.5 0 0 0 10.15 10.15z"
+          />
+        </svg>
+      </button>
+    </div>
   </div>
 </div>
-</div>
 
+<!-- Botón para crear un nuevo parque -->
 <button
-*ngIf="!loading"
-  class="bg-[#4CA773] text-white mb-6 font-bold px-4 py-2 rounded transition duration-200 ease-in-out hover:opacity-90 flex items-center gap-2 mx-4"
+  *ngIf="!loading"
+  class="bg-[#4CA773] text-white mb-6 font-bold px-4 py-2 rounded transition duration-200 ease-in-out hover:opacity-90 flex items-center gap-2 mx-4 transform hover:scale-105"
   [routerLink]="['/parques/crear']"
 >
   Agregar Parque
+  <!-- Icono de + -->
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
@@ -60,87 +78,133 @@
     <path
       stroke-linecap="round"
       stroke-linejoin="round"
-      d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+      d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 
+             9 9 0 0 1 18 0Z"
     />
   </svg>
 </button>
 
-<div *ngIf="loading" class="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-80">
-    <div class="flex flex-col items-center">
-      <svg class="animate-spin" fill="none" height="64" viewBox="0 0 64 64" width="64" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M8 32C8 46.3594 19.6406 58 34 58C48.3594 58 60 46.3594 60 32C60 17.6406 48.3594 6 34 6"
-          stroke="#4CA773"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="6"
-        />
-      </svg>
-      <span class="mt-6 text-lg text-[#4CA773] font-semibold">Cargando...</span>
+<!-- Loader (pantalla de carga con animación de spinner) -->
+<div
+  *ngIf="loading"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-80"
+>
+  <div class="flex flex-col items-center">
+    <!-- Ícono circular girando -->
+    <div
+      class="p-3 animate-spin drop-shadow-2xl bg-gradient-to-bl from-green-400 via-teal-400 to-blue-500 md:w-48 md:h-48 h-32 w-32 aspect-square rounded-full"
+    >
+      <div
+        class="rounded-full h-full w-full bg-slate-100 dark:bg-zinc-900 background-blur-md"
+      ></div>
     </div>
+    <!-- Texto de cargando -->
+    <span class="mt-6 text-lg text-[#4CA773] font-semibold">Cargando...</span>
   </div>
+</div>
 
+<!-- Contenedor de tarjetas de parques -->
 <div *ngIf="!loading" class="flex flex-wrap justify-center gap-4 p-4 bg-[#f4fdfb]">
+  <!-- Tarjeta individual de parque -->
   <div
     *ngFor="let park of displayedParks; let i = index"
-    class="w-[260px] min-h-[420px] flex flex-col border border-[#4BA6A5] rounded-[12px] p-4 bg-white shadow-[2px_4px_10px_rgba(0,0,0,0.1)] transition-transform transition-shadow duration-200 ease-in-out hover:-translate-y-1 hover:shadow-[4px_6px_15px_rgba(0,0,0,0.15)]"
+    class="bg-white rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] flex flex-col group w-[260px] min-h-[420px] cursor-pointer"
+    (click)="verDetalle(park.id)"
   >
-    <img
-      [src]="park.park_img_uri"
-      alt=""
-      class="w-full h-[160px] object-cover rounded-[8px] mb-3"
-    />
-    <h3 class="text-[1.1rem] text-[#0B6B3A] mb-1 font-bold">
-      {{ park.park_name }} ({{ park.park_abbreviation }})
-    </h3>
-    <p class="text-[0.9rem] text-[#444] my-1">{{ park.park_address }}</p>
-    <p>{{ park.park_city }}, {{ park.park_state }}</p>
-    <p class="text-[0.9rem] text-[#444] my-1">
-      <strong>CP:</strong> {{ park.park_zip_code }}
-    </p>
+    <!-- Imagen del parque -->
+    <div class="relative h-48 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+      <img
+        [src]="park.park_img_uri"
+        [alt]="'Imagen del parque ' + park.park_name"
+        class="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
+        loading="lazy"
+      />
+      <!-- Degradado oscuro sobre la imagen -->
+      <div
+        class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"
+      ></div>
+    </div>
 
-    <!-- BOTONES SIEMPRE ABAJO -->
-    <div class="flex justify-between mt-auto pt-4">
-      <button
-        (click)="editar(park.id)"
-        class="px-3 py-1.5 rounded-[6px] text-[0.9rem] cursor-pointer transition duration-200 ease-in-out bg-[#A6D67B] text-[#0B6B3A] hover:opacity-90 flex items-center gap-2"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="size-5"
+    <!-- Contenido de la tarjeta -->
+    <div class="p-5 flex flex-col flex-1">
+      <!-- Nombre y abreviación -->
+      <div class="mb-4">
+        <h2 class="text-lg font-bold text-gray-900 mb-2" [title]="park.park_name">
+          {{ park.park_name }}
+          <span *ngIf="park.park_abbreviation" class="text-gray-500 font-medium">
+            ({{ park.park_abbreviation }})
+          </span>
+        </h2>
+
+        <!-- Ciudad y estado -->
+        <div class="flex items-center text-gray-600 text-sm mb-2">
+          <span class="truncate"> {{ park.park_city }}, {{ park.park_state }} </span>
+        </div>
+
+        <!-- Dirección -->
+        <p
+          *ngIf="park.park_address"
+          class="text-gray-500 text-sm line-clamp-2 leading-relaxed"
+          [title]="park.park_address"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-          />
-        </svg>
-        Editar
-      </button>
+          📍 {{ park.park_address }}
+        </p>
+      </div>
+
+      <!-- Código postal -->
+      <div
+        class="flex justify-between items-center text-xs text-gray-400 mb-4 py-2 border-t border-gray-100"
+      >
+        <span *ngIf="park.park_zip_code" class="bg-gray-100 px-2 py-1 rounded break-words">
+          CP: {{ park.park_zip_code }}
+        </span>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="flex justify-between mt-auto pt-4">
+        <!-- Editar -->
+        <button
+          (click)="editar(park.id)"
+          class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-sm rounded transform transition-transform duration-200 hover:scale-105 flex items-center gap-2"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+            />
+          </svg>
+          <span>Editar</span>
+        </button>
+        <!-- Eliminar -->
         <button
           (click)="eliminar(park.id)"
-        class="px-3 py-1.5 rounded-[6px] text-[0.9rem] cursor-pointer transition duration-200 ease-in-out bg-[#E63946] text-white hover:opacity-90 flex items-center gap-2"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="size-6"
+          class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-sm rounded transform transition-transform duration-200 hover:scale-105 flex items-center gap-2"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-          />
-        </svg>
-        Eliminar
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+            />
+          </svg>
+          <span>Eliminar</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>

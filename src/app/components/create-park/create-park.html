@@ -1,219 +1,245 @@
-<div *ngIf="loading" class="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-80">
-    <div class="flex flex-col items-center">
-      <svg class="animate-spin" fill="none" height="64" viewBox="0 0 64 64" width="64" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M8 32C8 46.3594 19.6406 58 34 58C48.3594 58 60 46.3594 60 32C60 17.6406 48.3594 6 34 6"
-          stroke="#4CA773"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="6"
-        />
-      </svg>
-      <span class="mt-6 text-lg text-[#4CA773] font-semibold">Cargando...</span>
-    </div>
-  </div>
-
+<!-- Loader (pantalla de carga con animación de spinner) -->
 <div
-  *ngIf="!loading"
-  class="max-w-2xl mx-auto bg-white shadow-lg rounded-2xl p-8 border border-[#4BA6A5]"
+  *ngIf="loading"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-80"
 >
+  <div class="flex flex-col items-center">
+    <!-- Ícono circular girando -->
+    <div
+      class="p-3 animate-spin drop-shadow-2xl bg-gradient-to-bl from-green-400 via-teal-400 to-blue-500 md:w-48 md:h-48 h-32 w-32 aspect-square rounded-full"
+    >
+      <div
+        class="rounded-full h-full w-full bg-slate-100 dark:bg-zinc-900 background-blur-md"
+      ></div>
+    </div>
+    <!-- Texto de cargando -->
+    <span class="mt-6 text-lg text-[#4CA773] font-semibold">Cargando...</span>
+  </div>
+</div>
+
+<div *ngIf="!loading" class="max-w-6xl mx-auto">
   <h2 class="text-3xl font-bold text-[#0B6B3A] mb-6 text-center">
     {{ modoEdicion ? 'Editar Parque' : 'Agregar Nuevo Parque' }}
   </h2>
 
-  <form *ngIf="!loading" (ngSubmit)="guardarParque()" #parqueForm="ngForm" class="space-y-5">
-    <!-- Nombre -->
-    <div>
-      <label class="block text-sm font-semibold text-gray-700 mb-1">Nombre del parque</label>
-      <input
-        type="text"
-        name="nombre"
-        [(ngModel)]="parque.park_name"
-        placeholder="Ej. Parque Central"
-        class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
-        required
-        maxlength="100"
-      />
-      <div *ngIf="backendErrors['park_name']" class="text-red-500 text-sm mt-1">
-        {{ backendErrors['park_name'][0] }}
-      </div>
-    </div>
-
-    <!-- Abreviatura -->
-    <div>
-      <label class="block text-sm font-semibold text-gray-700 mb-1">Abreviatura</label>
-      <input
-        type="text"
-        name="abreviatura"
-        [(ngModel)]="parque.park_abbreviation"
-        placeholder="Ej. PC"
-        class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
-        required
-        maxlength="10"
-      />
-      <div *ngIf="backendErrors['park_abbreviation']" class="text-red-500 text-sm mt-1">
-        {{ backendErrors['park_abbreviation'][0] }}
-      </div>
-    </div>
-
-    <!-- Imagen -->
-    <div>
-      <label class="block text-sm font-semibold text-gray-700 mb-1">URL de la imagen</label>
-      <input
-        type="text"
-        name="imagen"
-        [(ngModel)]="parque.park_img_uri"
-        placeholder="https://... jpeg, jpg o png"
-        class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
-        required
-      />
-      <div *ngIf="backendErrors['park_img_url']" class="text-red-500 text-sm mt-1">
-        {{ backendErrors['park_img_url'][0] }}
-      </div>
-    </div>
-
-    <!-- Dirección -->
-    <div>
-      <label class="block text-sm font-semibold text-gray-700 mb-1">Dirección</label>
-      <input
-        type="text"
-        name="direccion"
-        [(ngModel)]="parque.park_address"
-        placeholder="Calle 123, Colonia"
-        class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
-        required
-        maxlength="150"
-      />
-      <div *ngIf="backendErrors['park_address']" class="text-red-500 text-sm mt-1">
-        {{ backendErrors['park_address'][0] }}
-      </div>
-    </div>
-
-    <!-- Ciudad / Estado -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- FORMULARIO -->
+    <form
+      *ngIf="!loading"
+      (ngSubmit)="guardarParque()"
+      #parqueForm="ngForm"
+      class="space-y-5 bg-white shadow-lg rounded-2xl p-8 border border-[#4BA6A5]"
+    >
+      <!-- Nombre -->
       <div>
-        <label class="block text-sm font-semibold text-gray-700 mb-1">Ciudad</label>
-        <select
-          name="ciudad"
-          [(ngModel)]="parque.park_city"
-          class="w-full p-3 border border-[#4CA773] rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773] transition-all duration-300 ease-in-out bg-white"
-          required
-          onfocus="this.classList.add('opened')"
-          onblur="this.classList.remove('opened')"
-        >
-          <option
-            value=""
-            class="bg-white text-gray-500 py-2 px-3 border border-[#4CA773] rounded-md transition-all duration-300 ease-in-out"
-          >
-            Selecciona una ciudad
-          </option>
-          <option
-            value="Zapopan"
-            class="bg-white text-[#0B6B3A] py-2 px-3 border border-[#4CA773] rounded-md hover:bg-[#F4FDFB] transition-all duration-300 ease-in-out"
-          >
-            Zapopan
-          </option>
-          <option
-            value="Guadalajara"
-            class="bg-white text-[#0B6B3A] py-2 px-3 border border-[#4CA773] rounded-md hover:bg-[#F4FDFB] transition-all duration-300 ease-in-out"
-          >
-            Guadalajara
-          </option>
-          <option
-            value="San Pedro Tlaquepaque"
-            class="bg-white text-[#0B6B3A] py-2 px-3 border border-[#4CA773] rounded-md hover:bg-[#F4FDFB] transition-all duration-300 ease-in-out"
-          >
-            San Pedro Tlaquepaque
-          </option>
-          <option
-            value="Tonalá"
-            class="bg-white text-[#0B6B3A] py-2 px-3 border border-[#4CA773] rounded-md hover:bg-[#F4FDFB] transition-all duration-300 ease-in-out"
-          >
-            Tonalá
-          </option>
-        </select>
-        <div *ngIf="backendErrors['park_city']" class="text-red-500 text-sm mt-1">
-          {{ backendErrors['park_city'][0] }}
-        </div>
-      </div>
-      <div>
-        <label class="block text-sm font-semibold text-gray-700 mb-1">Estado</label>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Nombre del parque</label>
         <input
           type="text"
-          name="estado"
-          [(ngModel)]="parque.park_state"
-          placeholder="Ej. Jalisco"
+          name="nombre"
+          [(ngModel)]="parque.park_name"
+          placeholder="Ej. Parque Central"
           class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
           required
           maxlength="100"
         />
-        <div *ngIf="backendErrors['park_state']" class="text-red-500 text-sm mt-1">
-          {{ backendErrors['park_state'][0] }}
+        <div *ngIf="backendErrors['park_name']" class="text-red-500 text-sm mt-1">
+          {{ backendErrors['park_name'][0] }}
         </div>
       </div>
-    </div>
 
-    <!-- CP / Lat / Long -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- Abreviatura -->
       <div>
-        <label class="block text-sm font-semibold text-gray-700 mb-1">Código Postal</label>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Abreviatura</label>
         <input
           type="text"
-          name="cp"
-          [(ngModel)]="parque.park_zip_code"
-          placeholder="Ej. 44100"
+          name="abreviatura"
+          [(ngModel)]="parque.park_abbreviation"
+          placeholder="Ej. PC"
           class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
           required
+          maxlength="10"
         />
-        <div *ngIf="backendErrors['park_zip_code']" class="text-red-500 text-sm mt-1">
-          {{ backendErrors['park_zip_code'][0] }}
+        <div *ngIf="backendErrors['park_abbreviation']" class="text-red-500 text-sm mt-1">
+          {{ backendErrors['park_abbreviation'][0] }}
         </div>
       </div>
-      <div>
-        <label class="block text-sm font-semibold text-gray-700 mb-1">Latitud</label>
-        <input
-          type="text"
-          name="latitud"
-          [(ngModel)]="parque.park_latitude"
-          placeholder="Ej. 20.6597"
-          class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
-          required
-        />
-        <div *ngIf="backendErrors['park_latitude']" class="text-red-500 text-sm mt-1">
-          {{ backendErrors['park_latitude'][0] }}
-        </div>
-      </div>
-      <div>
-        <label class="block text-sm font-semibold text-gray-700 mb-1">Longitud</label>
-        <input
-          type="text"
-          name="longitud"
-          [(ngModel)]="parque.park_longitude"
-          placeholder="Ej. -103.3496"
-          class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
-          required
-        />
-        <div *ngIf="backendErrors['park_longitude']" class="text-red-500 text-sm mt-1">
-          {{ backendErrors['park_longitude'][0] }}
-        </div>
-      </div>
-    </div>
 
-    <!-- Botones -->
-    <div class="flex justify-center gap-4 mt-6">
-      <button
-        type="button"
-        class="bg-[#4BA6A5] hover:bg-[#368a89] text-white px-7 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200 ease-in-out"
-        (click)="regresar()"
-      >
-        Regresar
-      </button>
-      <button
-        type="submit"
-        class="bg-[#4CA773] hover:bg-[#3b865c] text-white px-7 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200 ease-in-out"
-      >
-        Guardar
-      </button>
+      <!-- Imagen -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">URL de la imagen</label>
+        <input
+          type="text"
+          name="imagen"
+          [(ngModel)]="parque.park_img_uri"
+          placeholder="https://... jpeg, jpg o png"
+          class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
+          required
+        />
+        <div *ngIf="backendErrors['park_img_url']" class="text-red-500 text-sm mt-1">
+          {{ backendErrors['park_img_url'][0] }}
+        </div>
+      </div>
+
+      <!-- Dirección -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Dirección</label>
+        <input
+          type="text"
+          name="direccion"
+          [(ngModel)]="parque.park_address"
+          placeholder="Calle 123, Colonia"
+          class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
+          required
+          maxlength="150"
+        />
+        <div *ngIf="backendErrors['park_address']" class="text-red-500 text-sm mt-1">
+          {{ backendErrors['park_address'][0] }}
+        </div>
+      </div>
+
+      <!-- Ciudad / Estado -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1">Ciudad</label>
+          <select
+            name="ciudad"
+            [(ngModel)]="parque.park_city"
+            class="w-full p-3 border border-[#4CA773] rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773] transition-all duration-300 ease-in-out bg-white"
+            required
+          >
+            <option value="">Selecciona una ciudad</option>
+            <option value="Zapopan">Zapopan</option>
+            <option value="Guadalajara">Guadalajara</option>
+            <option value="San Pedro Tlaquepaque">San Pedro Tlaquepaque</option>
+            <option value="Tonalá">Tonalá</option>
+          </select>
+          <div *ngIf="backendErrors['park_city']" class="text-red-500 text-sm mt-1">
+            {{ backendErrors['park_city'][0] }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1">Estado</label>
+          <input
+            type="text"
+            name="estado"
+            [(ngModel)]="parque.park_state"
+            placeholder="Ej. Jalisco"
+            class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
+            required
+            maxlength="100"
+          />
+          <div *ngIf="backendErrors['park_state']" class="text-red-500 text-sm mt-1">
+            {{ backendErrors['park_state'][0] }}
+          </div>
+        </div>
+      </div>
+
+      <!-- CP / Lat / Long -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1">Código Postal</label>
+          <input
+            type="text"
+            name="cp"
+            [(ngModel)]="parque.park_zip_code"
+            placeholder="Ej. 44100"
+            class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
+            required
+          />
+          <div *ngIf="backendErrors['park_zip_code']" class="text-red-500 text-sm mt-1">
+            {{ backendErrors['park_zip_code'][0] }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1">Latitud</label>
+          <input
+            type="text"
+            name="latitud"
+            [(ngModel)]="parque.park_latitude"
+            placeholder="Ej. 20.6597"
+            class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
+            required
+          />
+          <div *ngIf="backendErrors['park_latitude']" class="text-red-500 text-sm mt-1">
+            {{ backendErrors['park_latitude'][0] }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1">Longitud</label>
+          <input
+            type="text"
+            name="longitud"
+            [(ngModel)]="parque.park_longitude"
+            placeholder="Ej. -103.3496"
+            class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
+            required
+          />
+          <div *ngIf="backendErrors['park_longitude']" class="text-red-500 text-sm mt-1">
+            {{ backendErrors['park_longitude'][0] }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="flex justify-center gap-4 mt-6">
+        <button
+          type="button"
+          class="bg-[#4BA6A5] hover:bg-[#368a89] text-white px-7 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200 ease-in-out"
+          (click)="regresar()"
+        >
+          Regresar
+        </button>
+        <button
+          type="submit"
+          class="bg-[#4CA773] hover:bg-[#3b865c] text-white px-7 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200 ease-in-out"
+        >
+          Guardar
+        </button>
+      </div>
+    </form>
+
+   <!-- CARD DE PREVISUALIZACIÓN CON ESTILO MODERNO -->
+    <div
+      class="bg-white rounded-2xl overflow-hidden shadow-lg transition-all duration-300 flex flex-col w-full"
+    >
+      <!-- Imagen del parque con degradado y efecto hover -->
+      <div class="relative h-48 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+        <img
+          *ngIf="!imagenNoEncontrada && getImagenUrl()"
+          [src]="getImagenUrl()"
+          alt="Imagen del parque"
+          class="w-full h-full object-cover transition-all duration-500"
+          (error)="imagenNoEncontrada = true"
+        />
+        <div
+          *ngIf="imagenNoEncontrada || !getImagenUrl()"
+          class="absolute inset-0 flex items-center justify-center bg-gray-100"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 13l2 2 4-4m1 6a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2h10z" />
+          </svg>
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+      </div>
+
+      <!-- Contenido de la card -->
+      <div class="p-5 flex flex-col flex-1">
+        <div class="mb-4 text-center">
+          <h3 class="text-2xl font-bold text-[#0B6B3A]">
+            {{ parque.park_name || 'Nombre del Parque' }}
+            <span *ngIf="parque.park_abbreviation" class="text-gray-500 font-medium">
+              ({{ parque.park_abbreviation }})
+            </span>
+          </h3>
+          <p class="text-gray-700">{{ parque.park_address || 'Dirección del parque' }}</p>
+          <p class="text-gray-700">{{ parque.park_city || 'Ciudad' }}, {{ parque.park_state || 'Estado' }}</p>
+          <p class="text-gray-500 text-sm mt-2">
+            CP: {{ parque.park_zip_code || '----' }} | Lat: {{ parque.park_latitude || '--' }} | Lng: {{ parque.park_longitude || '--' }}
+          </p>
+        </div>
+        <!-- Botones de acción (solo para previsualización puedes mantener ocultos si quieres) -->
+      </div>
     </div>
-  </form>
-</div>
+  </div>
+  </div>
