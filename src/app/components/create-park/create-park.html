@@ -18,7 +18,7 @@
 </div>
 
 <div *ngIf="!loading" class="max-w-6xl mx-auto">
-  <h2 class="text-3xl font-bold text-[#0B6B3A] mb-6 text-center">
+  <h2 class="text-3xl font-bold text-white mb-6 text-center">
     {{ modoEdicion ? 'Editar Parque' : 'Agregar Nuevo Parque' }}
   </h2>
 
@@ -126,6 +126,7 @@
             placeholder="Ej. Jalisco"
             class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
             required
+            readonly
             maxlength="100"
           />
           <div *ngIf="backendErrors['park_state']" class="text-red-500 text-sm mt-1">
@@ -156,6 +157,7 @@
             type="text"
             name="latitud"
             [(ngModel)]="parque.park_latitude"
+            (ngModelChange)="onCoordinatesChange()"
             placeholder="Ej. 20.6597"
             class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
             required
@@ -170,6 +172,7 @@
             type="text"
             name="longitud"
             [(ngModel)]="parque.park_longitude"
+            (ngModelChange)="onCoordinatesChange()"
             placeholder="Ej. -103.3496"
             class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
             required
@@ -198,39 +201,28 @@
       </div>
     </form>
 
-   <!-- CARD DE PREVISUALIZACIÓN CON ESTILO MODERNO -->
-    <div
-      class="bg-white rounded-2xl overflow-hidden shadow-lg transition-all duration-300 flex flex-col w-full"
-    >
-      <!-- Imagen del parque con degradado y efecto hover -->
-      <div class="relative h-48 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
-        <img
-          *ngIf="!imagenNoEncontrada && getImagenUrl()"
-          [src]="getImagenUrl()"
-          alt="Imagen del parque"
-          class="w-full h-full object-cover transition-all duration-500"
-          (error)="imagenNoEncontrada = true"
-        />
-        <div
-          *ngIf="imagenNoEncontrada || !getImagenUrl()"
-          class="absolute inset-0 flex items-center justify-center bg-gray-100"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M9 13l2 2 4-4m1 6a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2h10z" />
-          </svg>
+    <!-- CARD DE PREVISUALIZACIÓN -->
+    <div class="flex flex-col w-full max-w-md mx-auto space-y-6">
+      <!-- Card del parque -->
+      <div class="bg-white rounded-2xl overflow-hidden shadow-lg">
+        <div class="relative h-60 w-full bg-gradient-to-tr from-green-400 via-teal-400 to-blue-500 flex items-center justify-center shadow-md overflow-hidden">
+          <img
+            *ngIf="!imagenNoEncontrada && getImagenUrl()"
+            [src]="getImagenUrl()"
+            alt="Imagen del parque"
+            class="w-full h-full object-cover transition-all duration-500"
+            (error)="imagenNoEncontrada = true"
+          />
+          <div *ngIf="imagenNoEncontrada || !getImagenUrl()" class="absolute inset-0 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13l2 2 4-4m1 6a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2h10z"/>
+            </svg>
+          </div>
         </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-      </div>
-
-      <!-- Contenido de la card -->
-      <div class="p-5 flex flex-col flex-1">
-        <div class="mb-4 text-center">
+        <div class="p-3 text-center">
           <h3 class="text-2xl font-bold text-[#0B6B3A]">
             {{ parque.park_name || 'Nombre del Parque' }}
-            <span *ngIf="parque.park_abbreviation" class="text-gray-500 font-medium">
-              ({{ parque.park_abbreviation }})
-            </span>
+            <span *ngIf="parque.park_abbreviation" class="text-gray-500 font-medium">({{ parque.park_abbreviation }})</span>
           </h3>
           <p class="text-gray-700">{{ parque.park_address || 'Dirección del parque' }}</p>
           <p class="text-gray-700">{{ parque.park_city || 'Ciudad' }}, {{ parque.park_state || 'Estado' }}</p>
@@ -238,8 +230,14 @@
             CP: {{ parque.park_zip_code || '----' }} | Lat: {{ parque.park_latitude || '--' }} | Lng: {{ parque.park_longitude || '--' }}
           </p>
         </div>
-        <!-- Botones de acción (solo para previsualización puedes mantener ocultos si quieres) -->
       </div>
-    </div>
+
+      <!-- Card del mapa -->
+      <div class="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col">
+        <div class="px-4 py-2 bg-gradient-to-r from-green-500 to-blue-500 text-white font-semibold">
+          Ubicación en el mapa
+        </div>
+        <div id="map" class="w-full h-64"></div>
+      </div>
   </div>
-  </div>
+</div>

@@ -1,22 +1,18 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, NgZone } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { ParkService } from '../../services/park-service';
 import { Park } from '../../models/park';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'app-create-park',
-  imports: [
-    RouterModule,
-    FormsModule,
-    CommonModule,
-  ],
+  imports: [RouterModule, FormsModule, CommonModule],
   templateUrl: './create-park.html',
 })
-export class CreatePark {
-
+export class CreatePark implements AfterViewInit {
   backendErrors: { [key: string]: string[] } = {};
   loading: boolean = false;
 
@@ -27,7 +23,7 @@ export class CreatePark {
     park_img_uri: '',
     park_address: '',
     park_city: '',
-    park_state: '',
+    park_state: 'Jalisco',
     park_zip_code: 0,
     park_latitude: 0,
     park_longitude: 0,
@@ -36,11 +32,14 @@ export class CreatePark {
   modoEdicion = false;
   idEditar: number | null = null;
   imagenNoEncontrada = false;
+  private map!: L.Map;
+  private marker!: L.Marker;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private parkService: ParkService
+    private parkService: ParkService,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit() {
@@ -53,6 +52,7 @@ export class CreatePark {
         this.parkService.getById(+id).subscribe((parque) => {
           this.parque = { ...parque };
           this.loading = false;
+          this.updateMap();
         });
       } else {
         this.loading = false;
@@ -60,21 +60,73 @@ export class CreatePark {
     });
   }
 
-  getImagenUrl(): string | null {
-  const url = this.parque.park_img_uri || '';
+  ngAfterViewInit() {
+  console.log('ngAfterViewInit ejecutado ✅');
 
-  // En modo edición, concatenamos el storage
-  const finalUrl = this.modoEdicion
-    ? `https://azuritaa33.sg-host.com/storage/${url}`
-    : url;
+  setTimeout(() => {
+    const el = document.getElementById('map');
+    if (el) {
+      console.log('Contenedor #map encontrado ✅');
+      this.initMap();
+    } else {
+      console.error('❌ No se encontró el contenedor #map');
+    }
+  }, 300);
+}
 
-  // Validar que sea una URL con extensión de imagen
-  if (/\.(jpe?g|png)$/i.test(finalUrl)) {
-    return finalUrl;
+  ngOnDestroy() {
+    if (this.map) {
+      this.map.remove();
+    }
   }
 
-  return null;
-}
+  private initMap() {
+    this.map = L.map('map').setView(
+      [this.parque.park_latitude!, this.parque.park_longitude!],
+      13
+    );
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors',
+    }).addTo(this.map);
+
+    this.marker = L.marker([this.parque.park_latitude!, this.parque.park_longitude!]).addTo(
+      this.map
+    );
+  }
+
+  // Actualizar posición del mapa cuando cambie lat/lng
+  updateMap() {
+    if (this.map && this.marker) {
+      const lat = Number(this.parque.park_latitude);
+      const lng = Number(this.parque.park_longitude);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        this.marker.setLatLng([lat, lng]);
+        this.map.setView([lat, lng], 13);
+      }
+    }
+  }
+
+  // 🔹 Llamar updateMap() cuando se escriban coordenadas
+  onCoordinatesChange() {
+    this.ngZone.runOutsideAngular(() => {
+      setTimeout(() => this.updateMap(), 0);
+    });
+  }
+
+  getImagenUrl(): string | null {
+    const url = this.parque.park_img_uri || '';
+
+    // En modo edición, concatenamos el storage
+    const finalUrl = this.modoEdicion ? `https://azuritaa33.sg-host.com/storage/${url}` : url;
+
+    // Validar que sea una URL con extensión de imagen
+    if (/\.(jpe?g|png)$/i.test(finalUrl)) {
+      return finalUrl;
+    }
+
+    return null;
+  }
 
   guardarParque() {
     if (this.modoEdicion) {
@@ -195,5 +247,4 @@ export class CreatePark {
   regresar() {
     this.router.navigate(['/parques']);
   }
-
 }
