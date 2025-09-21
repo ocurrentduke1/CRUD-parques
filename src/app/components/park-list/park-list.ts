@@ -32,12 +32,10 @@ export class ParkList {
       },
       error: (err) => {
         console.error(err);
-        this.loading = false; // ocultar spinner aunque haya error
-        Swal.fire({
-          icon: 'error',
-          title: 'Error al cargar parques',
-          text: 'No se pudieron obtener los datos.',
-        });
+        this.parks = []; // asegurar arreglo vacío
+        this.filteredParks = [];
+        this.displayedParks = [];
+        this.loading = false; // ocultar spinner
       },
     });
   }
@@ -102,5 +100,9 @@ export class ParkList {
 
   verDetalle(id: number): void {
     this.router.navigate(['/parques/detalle', id]);
+  }
+
+  get noParks(): boolean {
+    return !this.loading && (!this.displayedParks || this.displayedParks.length === 0);
   }
 }

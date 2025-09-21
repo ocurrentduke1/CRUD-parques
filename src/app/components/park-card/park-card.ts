@@ -89,4 +89,8 @@ export class ParkCard implements AfterViewInit {
       window.open(url, '_blank');
     });
   }
+
+  get noPark(): boolean {
+    return !this.loading && !this.park;
+  }
 }

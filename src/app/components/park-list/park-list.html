@@ -1,3 +1,13 @@
+<!-- Loader -->
+<div *ngIf="loading" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-green-100 to-blue-100 bg-opacity-90">
+  <div class="flex flex-col items-center">
+    <div class="p-3 animate-spin drop-shadow-2xl bg-gradient-to-br from-green-400 via-teal-400 to-blue-500 md:w-48 md:h-48 h-32 w-32 aspect-square rounded-full">
+      <div class="rounded-full h-full w-full bg-white/80 backdrop-blur-md"></div>
+    </div>
+    <span class="mt-6 text-lg font-semibold text-blue-600">Cargando...</span>
+  </div>
+</div>
+
 <!-- Título principal -->
 <h2 *ngIf="!loading" class="text-2xl font-bold mb-4 py-2 px-4 bg-clip-text text-white">
   Lista de Parques
@@ -59,18 +69,19 @@
   </svg>
 </button>
 
-<!-- Loader -->
-<div *ngIf="loading" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-green-100 to-blue-100 bg-opacity-90">
-  <div class="flex flex-col items-center">
-    <div class="p-3 animate-spin drop-shadow-2xl bg-gradient-to-br from-green-400 via-teal-400 to-blue-500 md:w-48 md:h-48 h-32 w-32 aspect-square rounded-full">
-      <div class="rounded-full h-full w-full bg-white/80 backdrop-blur-md"></div>
-    </div>
-    <span class="mt-6 text-lg font-semibold text-blue-600">Cargando...</span>
-  </div>
+<!-- Mensaje de no hay parques -->
+<div *ngIf="noParks" class="flex flex-col items-center justify-center py-20 w-full">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-32 h-32 text-gray-300 mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 1.343-3 3v4h6v-4c0-1.657-1.343-3-3-3zM5 20h14a2 2 0 0 0 2-2v-2H3v2a2 2 0 0 0 2 2z"/>
+  </svg>
+  <p class="text-gray-200 text-xl font-semibold text-center max-w-md">
+    Actualmente no hay parques registrados. <br/>
+    ¡Registra uno para comenzar!
+  </p>
 </div>
 
 <!-- Contenedor de tarjetas -->
-<div *ngIf="!loading" class="flex flex-wrap justify-center gap-4 p-4 bg-[#1F7A5C]">
+<div *ngIf="!loading && !noParks" class="flex flex-wrap justify-center gap-4 p-4 bg-[#1F7A5C]">
   <div
     *ngFor="let park of displayedParks; let i = index"
     class="bg-gradient-to-br from-green-100 via-teal-50 to-blue-100 rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] flex flex-col group w-[260px] min-h-[420px] cursor-pointer"
