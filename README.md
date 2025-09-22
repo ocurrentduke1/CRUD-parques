@@ -73,16 +73,16 @@ Tailwind CSS – Estilos y diseño responsivo.
 Angular Forms – Gestión de formularios y validaciones.
 Angular Router – Navegación entre componentes.
 
-## Instrucciones para ejecutar el proyecto
+# Instrucciones para ejecutar el proyecto
 
-# 1. Instalar dependencias
+## 1. Instalar dependencias
 El proyecto utiliza npm para manejar dependencias. Ejecuta:
 
 ```bash
 npm install
 ```
 
-# 3. Levantar el servidor de desarrollo
+## 2. Levantar el servidor de desarrollo
 
 Una vez instaladas las dependencias, puedes iniciar el servidor de desarrollo:
 
