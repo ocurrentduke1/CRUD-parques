@@ -60,7 +60,8 @@ export class ParkList {
     }
   }
 
-  eliminar(id: number): void {
+  eliminar(id: number, event: Event): void {
+    event.stopPropagation();
     Swal.fire({
       title: '¿Seguro que desea eliminar este parque?',
       text: '¡No podrás revertir esto!',
@@ -94,7 +95,8 @@ export class ParkList {
     });
   }
 
-  editar(id: number): void {
+  editar(id: number, event: Event): void {
+    event.stopPropagation();
     this.router.navigate(['/parques/editar', id]);
   }
 

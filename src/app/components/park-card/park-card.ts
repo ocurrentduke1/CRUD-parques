@@ -5,6 +5,7 @@ import { Park } from '../../models/park';
 import { ActivatedRoute } from '@angular/router';
 import { ParkService } from '../../services/park-service';
 import * as L from 'leaflet';
+import { ClimaService } from '../../services/clima-service';
 
 @Component({
   selector: 'app-park-card',
@@ -17,9 +18,17 @@ export class ParkCard implements AfterViewInit {
   imagenNoEncontrada = false;
   private map!: L.Map;
 
+  // Datos del clima
+  temperatura: number | null = null;
+  humedad: number | null = null;
+  viento: number | null = null;
+  condicion: string | null = null;
+  
+
   constructor(
     private route: ActivatedRoute,
     private parkService: ParkService,
+    private climaService: ClimaService,
     private location: Location
   ) {}
 
@@ -41,6 +50,17 @@ export class ParkCard implements AfterViewInit {
 
         // Inicializar el mapa después de tener los datos
         setTimeout(() => this.initMap(), 100);
+
+        // Obtener clima
+        if (park.park_latitude && park.park_longitude) {
+          this.climaService.getClima(park.park_latitude, park.park_longitude)
+            .subscribe(data => {
+              this.temperatura = data.main.temp;
+              this.humedad = data.main.humidity;
+              this.viento = data.wind.speed;
+              this.condicion = data.weather[0].description;
+            });
+        }
       },
       error: () => {
         this.park = null;

@@ -1,19 +1,10 @@
-<!-- Loader (pantalla de carga con animación de spinner) -->
-<div
-  *ngIf="loading"
-  class="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-80"
->
+<!-- Loader -->
+<div *ngIf="loading" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-green-100 to-blue-100 bg-opacity-90">
   <div class="flex flex-col items-center">
-    <!-- Ícono circular girando -->
-    <div
-      class="p-3 animate-spin drop-shadow-2xl bg-gradient-to-bl from-green-400 via-teal-400 to-blue-500 md:w-48 md:h-48 h-32 w-32 aspect-square rounded-full"
-    >
-      <div
-        class="rounded-full h-full w-full bg-slate-100 dark:bg-zinc-900 background-blur-md"
-      ></div>
+    <div class="p-3 animate-spin drop-shadow-2xl bg-gradient-to-br from-green-400 via-teal-400 to-blue-500 md:w-48 md:h-48 h-32 w-32 aspect-square rounded-full">
+      <div class="rounded-full h-full w-full bg-white/80 backdrop-blur-md"></div>
     </div>
-    <!-- Texto de cargando -->
-    <span class="mt-6 text-lg text-[#4CA773] font-semibold">Cargando...</span>
+    <span class="mt-6 text-lg font-semibold text-blue-600">Cargando...</span>
   </div>
 </div>
 
