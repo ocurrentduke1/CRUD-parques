@@ -13,9 +13,19 @@ import * as L from 'leaflet';
   templateUrl: './create-park.html',
 })
 export class CreatePark implements AfterViewInit {
+  /**
+   * Estructura para almacenar errores provenientes del backend.
+   * La clave es el campo y el valor es un arreglo de mensajes de error.
+   */
   backendErrors: { [key: string]: string[] } = {};
+
+  /** Bandera que indica si hay operaciones cargando. */
   loading: boolean = false;
 
+  /**
+   * Objeto del parque que se está creando o editando.
+   * Partial<Park> permite que no todos los campos sean obligatorios.
+   */
   parque: Partial<Park> = {
     id: undefined,
     park_name: '',
@@ -29,10 +39,19 @@ export class CreatePark implements AfterViewInit {
     park_longitude: 0,
   };
 
+  /** Indica si el componente está en modo edición. */
   modoEdicion = false;
+
+  /** Guarda el id del parque que se está editando (si aplica). */
   idEditar: number | null = null;
+
+  /** Indica si la imagen no fue encontrada. */
   imagenNoEncontrada = false;
+
+  /** Referencia al mapa de Leaflet. */
   private map!: L.Map;
+
+  /** Referencia al marcador del mapa. */
   private marker!: L.Marker;
 
   constructor(
@@ -42,6 +61,12 @@ export class CreatePark implements AfterViewInit {
     private ngZone: NgZone
   ) {}
 
+  /**
+   * Hook de inicialización.
+   * - Verifica si existe un `id` en la ruta.
+   * - Si hay id → activa modo edición y obtiene el parque del backend.
+   * - Si no hay id → prepara para crear un nuevo parque.
+   */
   ngOnInit() {
     this.loading = true;
     this.route.paramMap.subscribe((params) => {
@@ -60,26 +85,37 @@ export class CreatePark implements AfterViewInit {
     });
   }
 
+  /**
+   * Hook que se ejecuta después de que la vista ha sido inicializada.
+   * Se asegura de que el contenedor del mapa exista antes de inicializar Leaflet.
+   */
   ngAfterViewInit() {
-  console.log('ngAfterViewInit ejecutado ✅');
+    console.log('ngAfterViewInit ejecutado ✅');
 
-  setTimeout(() => {
-    const el = document.getElementById('map');
-    if (el) {
-      console.log('Contenedor #map encontrado ✅');
-      this.initMap();
-    } else {
-      console.error('❌ No se encontró el contenedor #map');
-    }
-  }, 300);
-}
+    setTimeout(() => {
+      const el = document.getElementById('map');
+      if (el) {
+        console.log('Contenedor #map encontrado ✅');
+        this.initMap();
+      } else {
+        console.error('❌ No se encontró el contenedor #map');
+      }
+    }, 300);
+  }
 
+  /**
+   * Hook que destruye el mapa al destruir el componente
+   * para liberar memoria y recursos.
+   */
   ngOnDestroy() {
     if (this.map) {
       this.map.remove();
     }
   }
 
+  /**
+   * Inicializa el mapa de Leaflet con las coordenadas del parque actual.
+   */
   private initMap() {
     this.map = L.map('map').setView(
       [this.parque.park_latitude!, this.parque.park_longitude!],
@@ -90,12 +126,16 @@ export class CreatePark implements AfterViewInit {
       attribution: '© OpenStreetMap contributors',
     }).addTo(this.map);
 
-    this.marker = L.marker([this.parque.park_latitude!, this.parque.park_longitude!]).addTo(
-      this.map
-    );
+    this.marker = L.marker([
+      this.parque.park_latitude!,
+      this.parque.park_longitude!,
+    ]).addTo(this.map);
   }
 
-  // Actualizar posición del mapa cuando cambie lat/lng
+  /**
+   * Actualiza la posición del mapa y el marcador
+   * con las coordenadas actuales del parque.
+   */
   updateMap() {
     if (this.map && this.marker) {
       const lat = Number(this.parque.park_latitude);
@@ -107,20 +147,26 @@ export class CreatePark implements AfterViewInit {
     }
   }
 
-  // 🔹 Llamar updateMap() cuando se escriban coordenadas
+  /**
+   * Evento disparado al cambiar coordenadas manualmente en el formulario.
+   * Actualiza el mapa fuera del ciclo de Angular para optimizar rendimiento.
+   */
   onCoordinatesChange() {
     this.ngZone.runOutsideAngular(() => {
       setTimeout(() => this.updateMap(), 0);
     });
   }
 
+  /**
+   * Obtiene la URL final de la imagen del parque validando extensión
+   * y agregando prefijo de storage en caso de edición.
+   */
   getImagenUrl(): string | null {
     const url = this.parque.park_img_uri || '';
+    const finalUrl = this.modoEdicion
+      ? `https://azuritaa33.sg-host.com/storage/${url}`
+      : url;
 
-    // En modo edición, concatenamos el storage
-    const finalUrl = this.modoEdicion ? `https://azuritaa33.sg-host.com/storage/${url}` : url;
-
-    // Validar que sea una URL con extensión de imagen
     if (/\.(jpe?g|png)$/i.test(finalUrl)) {
       return finalUrl;
     }
@@ -128,6 +174,9 @@ export class CreatePark implements AfterViewInit {
     return null;
   }
 
+  /**
+   * Decide si se debe crear un parque nuevo o actualizar uno existente.
+   */
   guardarParque() {
     if (this.modoEdicion) {
       this.actualizarParque();
@@ -136,8 +185,11 @@ export class CreatePark implements AfterViewInit {
     }
   }
 
+  /**
+   * Crea un nuevo parque en el backend usando el servicio.
+   * Muestra alertas de éxito o error con SweetAlert2.
+   */
   crearParque() {
-    // Remove 'id' from the object before creating, since it's not required for new parks
     const { id, park_img_uri, ...rest } = this.parque;
     const parqueParaCrear = {
       ...rest,
@@ -159,7 +211,9 @@ export class CreatePark implements AfterViewInit {
             this.backendErrors = err.error.errors;
           }
           const mensaje =
-            err?.error?.message || err?.message || 'Error desconocido al crear parque';
+            err?.error?.message ||
+            err?.message ||
+            'Error desconocido al crear parque';
           Swal.fire({
             icon: 'error',
             title: 'Error al crear parque',
@@ -171,7 +225,10 @@ export class CreatePark implements AfterViewInit {
       if (err?.error?.errors) {
         this.backendErrors = err.error.errors;
       }
-      const mensaje = err?.error?.message || err?.message || 'Error desconocido al crear parque';
+      const mensaje =
+        err?.error?.message ||
+        err?.message ||
+        'Error desconocido al crear parque';
       Swal.fire({
         icon: 'error',
         title: 'Error al crear parque',
@@ -180,6 +237,11 @@ export class CreatePark implements AfterViewInit {
     }
   }
 
+  /**
+   * Actualiza un parque existente en el backend.
+   * - Pide confirmación al usuario antes de enviar los cambios.
+   * - Maneja errores y respuestas con SweetAlert2.
+   */
   actualizarParque() {
     if (this.idEditar !== null) {
       const parqueConId = {
@@ -204,7 +266,6 @@ export class CreatePark implements AfterViewInit {
           confirmButtonText: 'Guardar',
           denyButtonText: 'No guardar',
         }).then((result) => {
-          /* Read more about isConfirmed, isDenied below */
           if (result.isConfirmed) {
             this.parkService.update(this.idEditar!, parqueConId).subscribe({
               next: () => {
@@ -216,7 +277,9 @@ export class CreatePark implements AfterViewInit {
                   this.backendErrors = err.error.errors;
                 }
                 const mensaje =
-                  err?.error?.message || err?.message || 'Error desconocido al actualizar parque';
+                  err?.error?.message ||
+                  err?.message ||
+                  'Error desconocido al actualizar parque';
                 Swal.fire({
                   icon: 'error',
                   title: 'Error al actualizar parque',
@@ -234,7 +297,9 @@ export class CreatePark implements AfterViewInit {
           this.backendErrors = err.error.errors;
         }
         const mensaje =
-          err?.error?.message || err?.message || 'Error desconocido al actualizar parque';
+          err?.error?.message ||
+          err?.message ||
+          'Error desconocido al actualizar parque';
         Swal.fire({
           icon: 'error',
           title: 'Error al actualizar parque',
@@ -244,6 +309,9 @@ export class CreatePark implements AfterViewInit {
     }
   }
 
+  /**
+   * Regresa al listado de parques sin guardar cambios.
+   */
   regresar() {
     this.router.navigate(['/parques']);
   }

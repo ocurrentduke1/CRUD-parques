@@ -1,6 +1,7 @@
-<!-- Loader -->
+<!-- Loader: Se muestra cuando la variable "loading" está en true -->
 <div *ngIf="loading" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-green-100 to-blue-100 bg-opacity-90">
   <div class="flex flex-col items-center">
+    <!-- Spinner animado -->
     <div class="p-3 animate-spin drop-shadow-2xl bg-gradient-to-br from-green-400 via-teal-400 to-blue-500 md:w-48 md:h-48 h-32 w-32 aspect-square rounded-full">
       <div class="rounded-full h-full w-full bg-white/80 backdrop-blur-md"></div>
     </div>
@@ -8,20 +9,22 @@
   </div>
 </div>
 
+<!-- Contenedor principal cuando "loading" es false -->
 <div *ngIf="!loading" class="max-w-6xl mx-auto">
+  <!-- Título dinámico según si se edita o agrega un parque -->
   <h2 class="text-3xl font-bold text-white mb-6 text-center">
     {{ modoEdicion ? 'Editar Parque' : 'Agregar Nuevo Parque' }}
   </h2>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-    <!-- FORMULARIO -->
+    <!-- FORMULARIO DE REGISTRO/EDICIÓN DEL PARQUE -->
     <form
       *ngIf="!loading"
-      (ngSubmit)="guardarParque()"
+      (ngSubmit)="guardarParque()"  
       #parqueForm="ngForm"
       class="space-y-5 bg-white shadow-lg rounded-2xl p-8 border border-[#4BA6A5]"
     >
-      <!-- Nombre -->
+      <!-- Nombre del parque -->
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-1">Nombre del parque</label>
         <input
@@ -33,6 +36,7 @@
           required
           maxlength="100"
         />
+        <!-- Errores enviados desde el backend -->
         <div *ngIf="backendErrors['park_name']" class="text-red-500 text-sm mt-1">
           {{ backendErrors['park_name'][0] }}
         </div>
@@ -90,6 +94,7 @@
 
       <!-- Ciudad / Estado -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Ciudad -->
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-1">Ciudad</label>
           <select
@@ -108,6 +113,7 @@
             {{ backendErrors['park_city'][0] }}
           </div>
         </div>
+        <!-- Estado (solo lectura) -->
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-1">Estado</label>
           <input
@@ -126,8 +132,9 @@
         </div>
       </div>
 
-      <!-- CP / Lat / Long -->
+      <!-- Código Postal / Latitud / Longitud -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- CP -->
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-1">Código Postal</label>
           <input
@@ -142,6 +149,7 @@
             {{ backendErrors['park_zip_code'][0] }}
           </div>
         </div>
+        <!-- Latitud -->
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-1">Latitud</label>
           <input
@@ -157,13 +165,14 @@
             {{ backendErrors['park_latitude'][0] }}
           </div>
         </div>
+        <!-- Longitud -->
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-1">Longitud</label>
           <input
             type="text"
             name="longitud"
             [(ngModel)]="parque.park_longitude"
-            (ngModelChange)="onCoordinatesChange()"
+            (ngModelChange)="onCoordinatesChange()" 
             placeholder="Ej. -103.3496"
             class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4CA773] focus:border-[#4CA773]"
             required
@@ -174,8 +183,9 @@
         </div>
       </div>
 
-      <!-- Botones -->
+      <!-- Botones de acción -->
       <div class="flex justify-center gap-4 mt-6">
+        <!-- Botón regresar -->
         <button
           type="button"
           class="bg-[#4BA6A5] hover:bg-[#368a89] text-white px-7 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200 ease-in-out"
@@ -183,6 +193,7 @@
         >
           Regresar
         </button>
+        <!-- Botón guardar -->
         <button
           type="submit"
           class="bg-[#4CA773] hover:bg-[#3b865c] text-white px-7 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200 ease-in-out"
@@ -192,24 +203,27 @@
       </div>
     </form>
 
-    <!-- CARD DE PREVISUALIZACIÓN -->
+    <!-- CARD DE PREVISUALIZACIÓN DEL PARQUE -->
     <div class="flex flex-col w-full max-w-md mx-auto space-y-6">
-      <!-- Card del parque -->
+      <!-- Card con la información ingresada -->
       <div class="bg-white rounded-2xl overflow-hidden shadow-lg">
+        <!-- Imagen del parque -->
         <div class="relative h-60 w-full bg-gradient-to-tr from-green-400 via-teal-400 to-blue-500 flex items-center justify-center shadow-md overflow-hidden">
           <img
             *ngIf="!imagenNoEncontrada && getImagenUrl()"
             [src]="getImagenUrl()"
             alt="Imagen del parque"
             class="w-full h-full object-cover transition-all duration-500"
-            (error)="imagenNoEncontrada = true"
+            (error)="imagenNoEncontrada = true" 
           />
+          <!-- Ícono alternativo si no hay imagen -->
           <div *ngIf="imagenNoEncontrada || !getImagenUrl()" class="absolute inset-0 flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13l2 2 4-4m1 6a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2h10z"/>
             </svg>
           </div>
         </div>
+        <!-- Datos del parque -->
         <div class="p-3 text-center">
           <h3 class="text-2xl font-bold text-[#0B6B3A]">
             {{ parque.park_name || 'Nombre del Parque' }}
@@ -223,11 +237,12 @@
         </div>
       </div>
 
-      <!-- Card del mapa -->
+      <!-- Card del mapa de ubicación -->
       <div class="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col">
         <div class="px-4 py-2 bg-gradient-to-r from-green-500 to-blue-500 text-white font-semibold">
           Ubicación en el mapa
         </div>
+        <!-- Contenedor del mapa (inicializado en el TS con Leaflet/Google Maps) -->
         <div id="map" class="w-full h-64"></div>
       </div>
   </div>

@@ -13,9 +13,16 @@ import { ClimaService } from '../../services/clima-service';
   templateUrl: './park-card.html'
 })
 export class ParkCard implements AfterViewInit {
+  // Datos del parque cargado desde el servicio
   park: Park | null = null;
+
+  // Estado de carga
   loading: boolean = false;
+
+  // Control para detectar si hubo error cargando la imagen
   imagenNoEncontrada = false;
+
+  // Instancia del mapa de Leaflet
   private map!: L.Map;
 
   // Datos del clima
@@ -23,19 +30,29 @@ export class ParkCard implements AfterViewInit {
   humedad: number | null = null;
   viento: number | null = null;
   condicion: string | null = null;
-  
 
   constructor(
-    private route: ActivatedRoute,
-    private parkService: ParkService,
-    private climaService: ClimaService,
-    private location: Location
+    private route: ActivatedRoute,   // Para obtener parámetros de la ruta (ID del parque)
+    private parkService: ParkService, // Servicio para obtener datos del parque
+    private climaService: ClimaService, // Servicio para obtener datos del clima
+    private location: Location        // Para manejar navegación hacia atrás
   ) {}
 
+  /**
+   * Regresa a la página anterior en el historial del navegador.
+   */
   regresar() {
     this.location.back();
   }
 
+  /**
+   * Método del ciclo de vida Angular.
+   * Se ejecuta al iniciar el componente.
+   * - Obtiene el ID de la ruta.
+   * - Carga el parque desde el servicio.
+   * - Inicializa el mapa.
+   * - Obtiene los datos del clima.
+   */
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (!id) return;
@@ -48,10 +65,10 @@ export class ParkCard implements AfterViewInit {
         this.imagenNoEncontrada = false;
         this.loading = false;
 
-        // Inicializar el mapa después de tener los datos
+        // Inicializar el mapa después de cargar los datos
         setTimeout(() => this.initMap(), 100);
 
-        // Obtener clima
+        // Obtener clima con latitud/longitud
         if (park.park_latitude && park.park_longitude) {
           this.climaService.getClima(park.park_latitude, park.park_longitude)
             .subscribe(data => {
@@ -63,16 +80,26 @@ export class ParkCard implements AfterViewInit {
         }
       },
       error: () => {
+        // Si ocurre error al cargar, se marca como no encontrado
         this.park = null;
         this.loading = false;
       }
     });
   }
 
+  /**
+   * Método del ciclo de vida Angular.
+   * Se ejecuta cuando la vista ya está renderizada.
+   * En este caso, el mapa se inicializa después en `initMap()`.
+   */
   ngAfterViewInit() {
     // El mapa se inicializa después de obtener park
   }
 
+  /**
+   * Obtiene la URL de la imagen del parque.
+   * Verifica que exista y que tenga una extensión válida (jpg o png).
+   */
   getImagenUrl(): string | null {
     if (!this.park?.park_img_uri) return null;
 
@@ -82,6 +109,13 @@ export class ParkCard implements AfterViewInit {
     return null;
   }
 
+  /**
+   * Inicializa el mapa de Leaflet.
+   * - Centra en la latitud/longitud del parque.
+   * - Agrega capa de OpenStreetMap.
+   * - Coloca un marcador con el nombre del parque.
+   * - Permite abrir Google Maps al hacer clic.
+   */
   private initMap() {
     if (!this.park) return;
 
@@ -94,22 +128,25 @@ export class ParkCard implements AfterViewInit {
       zoom: 15
     });
 
-    // Agregar capa de OpenStreetMap
+    // Agregar capa base (OpenStreetMap)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(this.map);
 
-    // Agregar marcador
+    // Agregar marcador en la ubicación del parque
     const marker = L.marker([lat, lng]).addTo(this.map);
     marker.bindPopup(`<b>${this.park.park_name}</b>`).openPopup();
 
-    // Abrir Google Maps al hacer clic
+    // Evento click -> abrir ubicación en Google Maps
     this.map.on('click', () => {
       const url = `https://www.google.com/maps?q=${lat},${lng}`;
       window.open(url, '_blank');
     });
   }
 
+  /**
+   * Devuelve true si terminó de cargar y no se encontró parque.
+   */
   get noPark(): boolean {
     return !this.loading && !this.park;
   }
