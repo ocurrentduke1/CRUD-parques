@@ -1,4 +1,4 @@
-# PruebasVisuales
+# Prueba-tecnica
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.2.
 
@@ -57,4 +57,50 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
-# CRUD-parques
+## Descripcion CRUD-parques
+
+Administrador de Parques es una aplicación web desarrollada en Angular que permite gestionar parques de manera intuitiva. La aplicación incluye todas las operaciones básicas de un CRUD (Crear, Leer, Actualizar y Eliminar) y permite administrar información detallada de cada parque, incluyendo nombre, dirección, ciudad, estado, código postal, imágenes y ubicación geográfica. Además, integra visualización de mapas interactivos y datos climáticos para cada parque, ofreciendo una experiencia completa de administración y seguimiento.
+
+## Tecnologías y Librerías Utilizadas
+
+Angular CLI – Generación y gestión del proyecto.
+TypeScript – Lenguaje principal del desarrollo.
+RxJS – Manejo de programación reactiva y observables.
+Leaflet – Visualización de mapas interactivos.
+SweetAlert2 – Alertas y confirmaciones estilizadas.
+OpenWeatherMap API – Obtención de datos climáticos para cada parque.
+Tailwind CSS – Estilos y diseño responsivo.
+Angular Forms – Gestión de formularios y validaciones.
+Angular Router – Navegación entre componentes.
+
+## Instrucciones para ejecutar el proyecto
+
+# 1. Instalar dependencias
+El proyecto utiliza npm para manejar dependencias. Ejecuta:
+
+```bash
+npm install
+```
+
+# 3. Levantar el servidor de desarrollo
+
+Una vez instaladas las dependencias, puedes iniciar el servidor de desarrollo:
+
+```bash
+ng serve
+```
+Por defecto, la aplicación estará disponible en:
+
+```bash
+http://localhost:4200/
+```
+
+
+
+4. Compilación para producción (opcional)
+Para generar la versión optimizada para producción:
+
+
+```bash
+ng build
+```
