@@ -63,15 +63,15 @@ Administrador de Parques es una aplicación web desarrollada en Angular que perm
 
 ## Tecnologías y Librerías Utilizadas
 
-Angular CLI – Generación y gestión del proyecto.
-TypeScript – Lenguaje principal del desarrollo.
-RxJS – Manejo de programación reactiva y observables.
-Leaflet – Visualización de mapas interactivos.
-SweetAlert2 – Alertas y confirmaciones estilizadas.
-OpenWeatherMap API – Obtención de datos climáticos para cada parque.
-Tailwind CSS – Estilos y diseño responsivo.
-Angular Forms – Gestión de formularios y validaciones.
-Angular Router – Navegación entre componentes.
+- Angular CLI – Generación y gestión del proyecto.
+- TypeScript – Lenguaje principal del desarrollo.
+- RxJS – Manejo de programación reactiva y observables.
+- Leaflet – Visualización de mapas interactivos.
+- SweetAlert2 – Alertas y confirmaciones estilizadas.
+- OpenWeatherMap API – Obtención de datos climáticos para cada parque.
+- Tailwind CSS – Estilos y diseño responsivo.
+- Angular Forms – Gestión de formularios y validaciones.
+- Angular Router – Navegación entre componentes.
 
 # Instrucciones para ejecutar el proyecto
 
