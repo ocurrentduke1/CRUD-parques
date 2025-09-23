@@ -99,7 +99,7 @@
     (click)="verDetalle(park.id)"
   >
     <!-- Imagen del parque -->
-    <div class="relative h-48 overflow-hidden rounded-t-lg">
+    <div *ngIf="!loading" class="relative h-48 overflow-hidden rounded-t-lg">
       <img [src]="park.park_img_uri" [alt]="'Imagen del parque ' + park.park_name" class="w-full h-full object-cover transition-all duration-500 group-hover:scale-105" loading="lazy"/>
       <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
     </div>

@@ -63,10 +63,9 @@ export class ParkCard implements AfterViewInit {
       next: (park) => {
         this.park = park;
         this.imagenNoEncontrada = false;
-        this.loading = false;
 
         // Inicializar el mapa después de cargar los datos
-        setTimeout(() => this.initMap(), 100);
+        setTimeout(() => this.initMap(), 150);
 
         // Obtener clima con latitud/longitud
         if (park.park_latitude && park.park_longitude) {
@@ -78,6 +77,7 @@ export class ParkCard implements AfterViewInit {
               this.condicion = data.weather[0].description;
             });
         }
+        this.loading = false;
       },
       error: () => {
         // Si ocurre error al cargar, se marca como no encontrado
