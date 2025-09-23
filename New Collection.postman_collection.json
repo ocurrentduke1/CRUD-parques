@@ -1,0 +1,143 @@
+{
+	"info": {
+		"_postman_id": "79fad7b3-7f9d-43e7-b6cf-ee0d0d3dbba0",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45750852",
+		"_collection_link": "https://victormedina-93714.postman.co/workspace/Victor-Medina's-Workspace~f50cf542-2f42-4758-8c77-582d1f40909a/collection/45750852-79fad7b3-7f9d-43e7-b6cf-ee0d0d3dbba0?action=share&source=collection_link&creator=45750852"
+	},
+	"item": [
+		{
+			"name": "Index",
+			"request": {
+				"auth": {
+					"type": "apikey"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Ambu-public-key",
+						"value": "AMBU-T-BXiqUTFtRg8PbWLc-57055915-n59AHW",
+						"type": "text"
+					},
+					{
+						"key": "Ambu-Private-Key",
+						"value": "AMBU-fVN0VyresedITDPm7pvGrjnb2urUxlR0EKsS1qc86T4VEWP6-VFZ4N83UcrKS357V-T",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://azuritaa33.sg-host.com/api/web/v1/parks",
+					"protocol": "https",
+					"host": [
+						"azuritaa33",
+						"sg-host",
+						"com"
+					],
+					"path": [
+						"api",
+						"web",
+						"v1",
+						"parks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Show",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Ambu-public-key",
+						"value": "AMBU-T-BXiqUTFtRg8PbWLc-57055915-n59AHW",
+						"type": "text"
+					},
+					{
+						"key": "Ambu-Private-Key",
+						"value": "AMBU-fVN0VyresedITDPm7pvGrjnb2urUxlR0EKsS1qc86T4VEWP6-VFZ4N83UcrKS357V-T",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://azuritaa33.sg-host.com/api/web/v1/parks/1",
+					"protocol": "https",
+					"host": [
+						"azuritaa33",
+						"sg-host",
+						"com"
+					],
+					"path": [
+						"api",
+						"web",
+						"v1",
+						"parks",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Store",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Ambu-public-key",
+						"value": "AMBU-T-BXiqUTFtRg8PbWLc-57055915-n59AHW",
+						"type": "text"
+					},
+					{
+						"key": "Ambu-Private-Key",
+						"value": "AMBU-fVN0VyresedITDPm7pvGrjnb2urUxlR0EKsS1qc86T4VEWP6-VFZ4N83UcrKS357V-T",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \"park_name\": \"Parque Cerro de la Reina\",\r\n \"park_abbreviation\": \"PCR\",\r\n \"park_img_url\": \"https://mapio.net/images-p/24809188.jpg\",\r\n \"park_address\": \"Av. Cihualpilli S/N, Pachaguillo.\",\r\n \"park_city\": \"Tonalá\",\r\n \"park_state\": \"Jalisco\",\r\n \"park_zip_code\": 45400,\r\n \"park_latitude\": 20.634154454586444,\r\n \"park_longitude\": -103.23870443595837\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://azuritaa33.sg-host.com/api/web/v1/parks/",
+					"protocol": "https",
+					"host": [
+						"azuritaa33",
+						"sg-host",
+						"com"
+					],
+					"path": [
+						"api",
+						"web",
+						"v1",
+						"parks",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update",
+			"request": {
+				"method": "PUT",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Destroy",
+			"request": {
+				"method": "DELETE",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
