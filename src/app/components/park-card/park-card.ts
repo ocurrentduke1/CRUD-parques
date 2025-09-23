@@ -94,6 +94,7 @@ export class ParkCard implements AfterViewInit {
    */
   ngAfterViewInit() {
     // El mapa se inicializa después de obtener park
+    this.initMap();
   }
 
   /**
@@ -133,7 +134,10 @@ export class ParkCard implements AfterViewInit {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(this.map);
 
-    var myIcon = L.icon({
+
+    //INICIALIZAR ESTE ICONO SI EL MARKER POR DEFECTO NO CARGA
+
+    /*var myIcon = L.icon({
     iconUrl: 'https://pngimg.com/uploads/google_maps_pin/google_maps_pin_PNG76.png',
     iconSize: [64, 64],
     iconAnchor: [32, 64],
@@ -141,10 +145,13 @@ export class ParkCard implements AfterViewInit {
     shadowUrl: 'my-icon-shadow.png',
     shadowSize: [68, 95],
     shadowAnchor: [22, 94]
-});
+});*/
+    // Agregar marcador en la ubicación del parque con icono personalizado
+    //const marker = L.marker([lat, lng], { icon: myIcon }).addTo(this.map);
+    //marker.bindPopup(`<b>${this.park.park_name}</b>`).openPopup();
 
     // Agregar marcador en la ubicación del parque
-    const marker = L.marker([lat, lng], { icon: myIcon }).addTo(this.map);
+    const marker = L.marker([lat, lng]).addTo(this.map);
     marker.bindPopup(`<b>${this.park.park_name}</b>`).openPopup();
 
     // Evento click -> abrir ubicación en Google Maps
